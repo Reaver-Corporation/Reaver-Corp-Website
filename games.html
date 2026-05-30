@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Explore Our Games — Reaver Corp™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --gold: #f0b429;
+    --gold-bright: #ffe066;
+    --gold-dark: #b8860b;
+    --gold-glow: rgba(240,180,41,0.35);
+    --black: #080808;
+    --dark: #0e0e0e;
+    --card-bg: #111111;
+    --card-border: rgba(240,180,41,0.25);
+    --text: #e8dcc8;
+    --muted: #9a8e78;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease, opacity 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    opacity: 0.5;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.98) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(240,180,41,0.08);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .nav-logo-img {
+    height: 36px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(240,180,41,0.4));
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ─── BTN ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.4s ease;
+    z-index: 0;
+  }
+  .btn span { position: relative; z-index: 1; }
+  .btn:hover::before { transform: translateX(0); }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .btn-primary:hover { color: var(--black); }
+  .btn-primary::before { background: var(--gold-bright); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .btn-outline::before { background: var(--gold); }
+  .btn-outline:hover { color: var(--black); }
+
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(240,180,41,0.4); }
+  .btn-outline:hover { box-shadow: 0 0 30px rgba(240,180,41,0.2); }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    min-height: 52vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 130px 24px 70px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(240,180,41,0.10) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity: 0.7; }
+  }
+
+  .page-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top left, rgba(240,180,41,0.05), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(240,180,41,0.03), transparent 55%);
+    pointer-events: none;
+  }
+
+  .page-header-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+
+  .page-header-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(30px, 6vw, 62px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    text-shadow: 0 0 60px rgba(240,180,41,0.5), 0 0 120px rgba(240,180,41,0.2);
+    position: relative; z-index: 1;
+    margin-bottom: 28px;
+  }
+
+  .page-header-divider {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 22px;
+    position: relative; z-index: 1;
+  }
+  .page-header-divider::before, .page-header-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .page-header-divider::after {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+  .page-header-divider-icon {
+    width: 8px; height: 8px;
+    border: 1px solid var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .page-header-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    position: relative; z-index: 1;
+  }
+
+  .page-header-border {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(240,180,41,0.15), transparent);
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 80px 48px 100px; max-width: 1100px; margin: 0 auto; }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .section-line {
+    width: 60px; height: 2px;
+    background: var(--gold);
+    margin: 0 auto 14px;
+  }
+  .section-sub {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 60px;
+    font-family: 'Cinzel', serif;
+  }
+
+  /* ─── GAME CARDS ─── */
+  .games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .game-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 52px 56px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.5s, box-shadow 0.5s;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .game-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, rgba(240,180,41,0.04), transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .game-card:hover {
+    border-color: rgba(240,180,41,0.55);
+    box-shadow: 0 0 80px rgba(240,180,41,0.07);
+  }
+
+  .game-card:hover::after { opacity: 1; }
+
+  .game-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .game-number {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .game-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border: 1px solid rgba(240,180,41,0.4);
+    color: var(--gold);
+    border-radius: 2px;
+    background: rgba(240,180,41,0.04);
+  }
+
+  .game-status-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .game-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(30px, 5vw, 54px);
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    text-shadow: 0 0 40px rgba(240,180,41,0.25);
+    margin-bottom: 6px;
+  }
+
+  .game-subtitle-line {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 20px 0 32px;
+  }
+  .game-subtitle-line::after {
+    content: '';
+    flex: 1;
+    max-width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .game-type-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .game-premise {
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--text);
+    font-weight: 300;
+    max-width: 720px;
+    border-left: 2px solid rgba(240,180,41,0.35);
+    padding-left: 28px;
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+
+  .game-premise p + p {
+    margin-top: 14px;
+  }
+
+  .game-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 3px 9px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .tag-muted {
+    border-color: rgba(154,142,120,0.4);
+    color: var(--muted);
+  }
+
+  .game-card-corner {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, transparent 50%, rgba(240,180,41,0.04) 50%);
+  }
+
+  /* ─── COMING SOON CARD ─── */
+  .more-coming {
+    background: transparent;
+    border: 1px dashed rgba(240,180,41,0.18);
+    padding: 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .more-coming-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .more-coming-icon {
+    width: 48px; height: 48px;
+    border: 1px solid rgba(240,180,41,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .more-coming h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .more-coming p {
+    font-size: 13px;
+    color: rgba(154,142,120,0.6);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .footer-cta {
+    max-width: 100%;
+    padding: 0;
+    margin: 40px 0 0;
+    background: var(--black);
+  }
+  .footer-cta-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    border: 1px solid var(--card-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .footer-cta-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at left center, rgba(240,180,41,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .footer-cta-text h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(20px, 3vw, 32px);
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .footer-cta-text p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 400px;
+    line-height: 1.7;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(240,180,41,0.1);
+    padding: 36px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 100%;
+  }
+  .footer-copy {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-family: 'Cinzel', serif;
+  }
+  .footer-brand {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stagger > * { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .stagger.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0s; }
+  .stagger.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.15s; }
+  .stagger.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.3s; }
+
+  @media (max-width: 900px) {
+    section { padding: 60px 24px 80px; }
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .game-card { padding: 36px 28px; }
+    .game-card-top { flex-direction: column; gap: 10px; }
+    .footer-cta-inner { flex-direction: column; text-align: center; }
+    footer { flex-direction: column; text-align: center; }
+    .more-coming { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav>
+  <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Reaver Corp" class="nav-logo-img"></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">Nosotros</a></li>
+    <li><a href="index.html#founders">Fundadores</a></li>
+    <li><a href="index.html#support">Soporte</a></li>
+    <li><a href="index.html" class="btn btn-outline" style="padding:8px 20px;font-size:10px;">← Home</a></li>
+  </ul>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+  <p class="page-header-eyebrow">Reaver Corp™ · Psychological Horror</p>
+  <h1 class="page-header-title">Explore Our Games</h1>
+  <div class="page-header-divider">
+    <div class="page-header-divider-icon"></div>
+  </div>
+  <p class="page-header-sub">Experiences designed to haunt you long after you stop playing</p>
+  <div class="page-header-border"></div>
+</div>
+
+<!-- Games Section -->
+<section id="games">
+  <div class="reveal" style="text-align:center; margin-bottom: 52px;">
+    <h2 class="section-title">Our Titles</h2>
+    <div class="section-line"></div>
+    <p class="section-sub">Enter if you dare. Leave if you can.</p>
+  </div>
+
+  <div class="games-list stagger">
+
+    <!-- Stay Tonight -->
+    <div class="game-card reveal">
+      <div class="game-card-top">
+        <span class="game-number">Game &nbsp;·&nbsp; 001</span>
+        <span class="game-status-badge">In Development</span>
+      </div>
+
+      <h2 class="game-title">Stay Tonight</h2>
+
+      <div class="game-subtitle-line">
+        <span class="game-type-label">Psychological Horror &nbsp;·&nbsp; First Person</span>
+      </div>
+
+      <div class="game-premise">
+        <p>The night before your birthday was supposed to be just another normal evening with friends.</p>
+        <p>But after walking home alone, the silent phone calls, open windows, and the growing feeling of being watched begin to consume you.</p>
+        <p>Something isn't right… and you may already be too late to realize it.</p>
+      </div>
+
+      <div class="game-tags">
+        <span class="tag">Psychological Horror</span>
+        <span class="tag">Single Player</span>
+        <span class="tag tag-muted">PC</span>
+        <span class="tag tag-muted">2025</span>
+      </div>
+
+      <a href="index.html#support" class="btn btn-outline"><span>Request Early Access</span><span>→</span></a>
+
+      <div class="game-card-corner"></div>
+    </div>
+
+    <!-- More coming -->
+    <div class="more-coming reveal">
+      <div class="more-coming-inner">
+        <div class="more-coming-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+        </div>
+        <h3>More Titles Incoming</h3>
+        <p>New horrors are being forged. Stay close.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer CTA -->
+<div class="footer-cta">
+  <div class="footer-cta-inner reveal">
+    <div class="footer-cta-text">
+      <h2>Ready to Face Your Fears?</h2>
+      <p>Follow our development and be among the first to experience what we're building in the dark.</p>
+    </div>
+    <a href="index.html#support" class="btn btn-primary"><span>Contact Us</span></a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">Reaver Corp™</div>
+  <div class="footer-copy">© 2024 Reaver Corp. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="index.html#support">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // ── Custom cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '56px';
+      ring.style.height = '56px';
+      ring.style.opacity = '0.8';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.opacity = '0.5';
+    });
+  });
+
+  // ── Reveal on scroll ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

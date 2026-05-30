@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reaver Corp™ — Designed to Haunt You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --gold: #f0b429;
+    --gold-bright: #ffe066;
+    --gold-dark: #b8860b;
+    --gold-glow: rgba(240,180,41,0.35);
+    --black: #080808;
+    --dark: #0e0e0e;
+    --card-bg: #111111;
+    --card-border: rgba(240,180,41,0.25);
+    --text: #e8dcc8;
+    --muted: #9a8e78;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s ease, opacity 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    opacity: 0.5;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.98) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(240,180,41,0.08);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo-img {
+    height: 36px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 0 6px rgba(240,180,41,0.4));
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Radial glow behind hero */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(240,180,41,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity: 0.7; }
+  }
+
+  /* Corner vignettes */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top left, rgba(240,180,41,0.06), transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(240,180,41,0.04), transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-logo-icon {
+    width: 300px; height: 270px;
+    margin-bottom: 28px;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 24px var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(42px, 8vw, 88px);
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(240,180,41,0.5), 0 0 120px rgba(240,180,41,0.2);
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title sup {
+    font-size: 0.3em;
+    vertical-align: super;
+    letter-spacing: 0;
+  }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px auto 20px;
+    width: 100%;
+    max-width: 400px;
+    position: relative; z-index: 1;
+  }
+  .hero-divider::before, .hero-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .hero-divider::after {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+  .hero-tagline {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .hero-desc {
+    max-width: 520px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin: 8px auto 44px;
+    position: relative; z-index: 1;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative; z-index: 1;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.4s ease;
+    z-index: 0;
+  }
+  .btn span { position: relative; z-index: 1; }
+  .btn:hover::before { transform: translateX(0); }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+  }
+  .btn-primary:hover { color: var(--black); }
+  .btn-primary::before { background: var(--gold-bright); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+  .btn-outline::before { background: var(--gold); }
+  .btn-outline:hover { color: var(--black); }
+
+  /* scroll arrow */
+  .scroll-arrow {
+    position: absolute;
+    bottom: 36px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    animation: bounce 2s ease-in-out infinite;
+    z-index: 1;
+  }
+  .scroll-arrow span {
+    display: block;
+    width: 10px; height: 10px;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    transform: rotate(45deg);
+    opacity: 0.7;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .section-line {
+    width: 60px; height: 2px;
+    background: var(--gold);
+    margin: 0 auto 14px;
+  }
+  .section-sub {
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 60px;
+    font-family: 'Cinzel', serif;
+  }
+
+  /* ─── ABOUT CARDS ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .about-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.4s, transform 0.4s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top center, rgba(240,180,41,0.06), transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .about-card:hover { border-color: var(--gold); transform: translateY(-6px); }
+  .about-card:hover::before { opacity: 1; }
+
+  .about-card-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 20px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 20px;
+  }
+  .about-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .about-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* ─── QUOTE ─── */
+  .quote-block {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--gold);
+    padding: 44px 56px;
+    text-align: center;
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .quote-mark {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 64px;
+    color: var(--gold);
+    line-height: 0;
+    position: absolute;
+    top: 40px; left: 40px;
+    opacity: 0.4;
+  }
+  .quote-text {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(15px, 2.2vw, 19px);
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── FOUNDERS ─── */
+  #founders { border-top: 1px solid rgba(240,180,41,0.08); }
+
+  .founders-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .founder-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 28px;
+    position: relative;
+    transition: border-color 0.4s, box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .founder-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, transparent 50%, rgba(240,180,41,0.06) 50%);
+  }
+  .founder-card:hover {
+    border-color: rgba(240,180,41,0.5);
+    box-shadow: 0 0 30px rgba(240,180,41,0.08);
+  }
+
+  .founder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  .founder-name {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .founder-icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .founder-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .tag {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 3px 9px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .founder-role {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .founder-bio {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* ─── STATS ─── */
+  .stats-band {
+    background: var(--card-bg);
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-item {
+    padding: 52px 24px;
+    text-align: center;
+    border-right: 1px solid var(--card-border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(240,180,41,0.03); }
+  .stat-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--gold);
+    display: block;
+    text-shadow: 0 0 30px rgba(240,180,41,0.3);
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── SUPPORT ─── */
+  #support { border-top: 1px solid rgba(240,180,41,0.08); }
+
+  .support-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    color: var(--gold);
+    font-size: 24px;
+  }
+  .support-title-section {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .support-box {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 44px 48px;
+    text-align: center;
+    position: relative;
+  }
+  .support-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .support-box h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 14px;
+    letter-spacing: 0.08em;
+  }
+  .support-box p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .support-meta {
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .footer-cta {
+    max-width: 100%;
+    padding: 0;
+    margin: 60px 0 0;
+    background: var(--black);
+  }
+  .footer-cta-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    border: 1px solid var(--card-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .footer-cta-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at left center, rgba(240,180,41,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .footer-cta-text h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(20px, 3vw, 32px);
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .footer-cta-text p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 400px;
+    line-height: 1.7;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(240,180,41,0.1);
+    padding: 36px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 100%;
+  }
+  .footer-copy {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-family: 'Cinzel', serif;
+  }
+  .footer-brand {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* stagger children */
+  .stagger > * { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .stagger.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:0s; }
+  .stagger.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:0.12s; }
+  .stagger.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:0.24s; }
+  .stagger.visible > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay:0.36s; }
+
+  /* glow pulse on hover buttons */
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(240,180,41,0.4); }
+  .btn-outline:hover { box-shadow: 0 0 30px rgba(240,180,41,0.2); }
+
+  @media (max-width: 900px) {
+    section { padding: 70px 24px; }
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .founders-grid { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3) { border-top: 1px solid var(--card-border); }
+    .footer-cta-inner { flex-direction: column; text-align: center; }
+    footer { flex-direction: column; text-align: center; }
+  }
+
+/* ─── MODAL DE IDIOMA ─── */
+  .lang-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.95);
+    z-index: 10000; /* Por encima de todo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .lang-modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--gold);
+    padding: 48px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 50px rgba(240, 180, 41, 0.15);
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .lang-title {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--gold);
+    font-size: 24px;
+    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px rgba(240,180,41,0.4);
+  }
+  .lang-text {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .lang-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  /* Clase para ocultarlo suavemente */
+  .lang-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="language-modal" class="lang-modal">
+  <div class="lang-modal-content">
+    <h2 class="lang-title">CHOOSE YOUR DESTINY</h2>
+    <p class="lang-text">¿Deseas ver la web en Español o continuar en Inglés?</p>
+    <div class="lang-btns">
+      <button id="btn-es" class="btn btn-outline"><span>Español</span></button>
+      <button id="btn-en" class="btn btn-primary"><span>English</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo"><img src="Reaver Logo.png" alt="Reaver Corp" class="nav-logo-img"></div>
+  <ul class="nav-links">
+    <li><a href="#about">About Us</a></li>
+    <li><a href="#founders">Founders</a></li>
+    <li><a href="#support">Support</a></li>
+    <li><a href="games.html" class="btn btn-outline" style="padding:8px 20px;font-size:10px;">Jugar</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  
+  <div class="hero-logo-icon">
+    <img src="Reaver Logo.png" alt="Reaver Corp Logo" style="width:300px;height:auto;">
+  </div>
+
+  <h1 class="hero-title">REAVER CORP<sup>™</sup></h1>
+
+  <div class="hero-divider">
+    <span class="hero-tagline">— Designed to Haunt You —</span>
+  </div>
+
+  <p class="hero-desc">
+    Crafting psychological horror experiences that blur the line between game and reality. Immerse yourself in fear. Feel the terror within.
+  </p>
+
+  <div class="hero-btns">
+    <a href="games.html" class="btn btn-primary"><span>⬇</span><span>Explore Our Games</span></a>
+    <a href="#founders" class="btn btn-outline"><span>Meet the Team</span><span>⬇</span></a>
+  </div>
+
+  <div class="scroll-arrow"><span></span><span></span></div>
+</div>
+ 
+<!-- About -->
+<section id="about">
+  <div class="reveal">
+    <h2 class="section-title">About Reaver Corp</h2>
+    <div class="section-line"></div>
+    <p class="section-sub">Forged in darkness. Built on fear.</p>
+  </div>
+
+  <div class="about-grid stagger">
+    <div class="about-card">
+      <div class="about-card-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <h3>Our Mission</h3>
+      <p>To entertain our public and offer different experiences, but always with a touch of fear that lingers long after the screen goes dark.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-card-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>Our Origin</h3>
+      <p>In 2024, Uriel had an idea on creating an enterprise about the horror industry along with his friend Alberto. Together, they set out to leave a mark on the world of psychological terror.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-card-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <h3>What We Create</h3>
+      <p>We offer psychological horror games — mostly plausible and life-happening — designed to immerse the player in a real situation, making fear feel inevitable and inescapable.</p>
+    </div>
+  </div>
+
+  <!-- Quote -->
+  <div class="quote-block reveal">
+    <span class="quote-mark">"</span>
+    <p class="quote-text">Fear is not just an emotion — it's an experience we craft with precision and passion.</p>
+  </div>
+</section>
+
+<!-- Founders -->
+<section id="founders">
+  <div class="reveal">
+    <h2 class="section-title">Meet the Founders</h2>
+    <div class="section-line"></div>
+    <p class="section-sub">Four visionaries united by a passion for horror and game development</p>
+  </div>
+
+  <div class="founders-grid stagger">
+    <!-- Uriel -->
+    <div class="founder-card">
+      <div class="founder-header">
+        <div>
+          <div class="founder-name">Uriel Lucena</div>
+          <div class="founder-tags">
+            <span class="tag">CEO</span>
+            <span class="tag">CMO</span>
+            <span class="tag">CFO</span>
+            <span class="tag">CTO</span>
+          </div>
+        </div>
+        <div class="founder-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+      <div class="founder-role">Creative Director, Marketing Head, Developer, Web & Graphic Designer</div>
+      <p class="founder-bio">Born in 2009, Uriel always wanted to become something that stood out, something which made him successful — such as creating games and spreading joy across the world.</p>
+    </div>
+
+    <!-- Alberto -->
+    <div class="founder-card">
+      <div class="founder-header">
+        <div>
+          <div class="founder-name">Alberto García</div>
+          <div class="founder-tags">
+            <span class="tag">CEO</span>
+            <span class="tag">CTO</span>
+          </div>
+        </div>
+        <div class="founder-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+      </div>
+      <div class="founder-role">Main Programmer, Developer & Hoster of Projects</div>
+      <p class="founder-bio">Uriel's instant best friend. Since little, he always had a thing for games. As he was growing up, he wanted to work in the field of computers and has never looked back.</p>
+    </div>
+
+    <!-- Víctor -->
+    <div class="founder-card">
+      <div class="founder-header">
+        <div>
+          <div class="founder-name">Víctor Arias</div>
+          <div class="founder-tags">
+            <span class="tag">CEO</span>
+            <span class="tag">CTO</span>
+          </div>
+        </div>
+        <div class="founder-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+      </div>
+      <div class="founder-role">Programmer, Developer & Code Quality Assurance</div>
+      <p class="founder-bio">Born in 2009, he started growing an interest in making games since he was three. Not long after, he dreamt about developing his own games — and that dream became reality.</p>
+    </div>
+
+    <!-- Adrián -->
+    <div class="founder-card">
+      <div class="founder-header">
+        <div>
+          <div class="founder-name">Adrián Baena</div>
+          <div class="founder-tags">
+            <span class="tag">CEO</span>
+            <span class="tag">CTO</span>
+          </div>
+        </div>
+        <div class="founder-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+      </div>
+      <div class="founder-role">Programmer, Developer, Web & Map Designer</div>
+      <p class="founder-bio">Born in 2009, he is an enthusiast of programming languages. He loves coding and bringing codes to life. From LUA to C++, he has even read books about them — a true polyglot of the digital world.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Band -->
+<div class="stats-band">
+  <div class="stats-inner stagger">
+    <div class="stat-item">
+      <span class="stat-num">2024</span>
+      <span class="stat-label">Founded</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">4</span>
+      <span class="stat-label">Co-Founders</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Passion Driven</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Hours of Fear</span>
+    </div>
+  </div>
+</div>
+
+<!-- Support -->
+<section id="support">
+  <div class="support-title-section reveal">
+    <div class="support-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+    </div>
+    <h2 class="section-title">Technical Support</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="support-box reveal">
+    <h3>Need Help? We're Here for You</h3>
+    <p>Experiencing issues with our games or have questions? Our technical support team is ready to assist you. Fill out our support form and we'll get back to you as soon as possible.</p>
+    <a href="mailto:reavercorporationofficial@gmail.com" class="btn btn-primary"><span>📨</span><span>Submit Support Request</span></a>
+    <p class="support-meta">Average response time: 24–48 hours</p>
+  </div>
+</section>
+
+<!-- Games -->
+<section id="games">
+  <div class="reveal">
+    <h2 class="section-title">Our Games</h2>
+    <div class="section-line"></div>
+    <p class="section-sub">Psychological horror experiences crafted to blur the line between game and reality.</p>
+  </div>
+
+  <div class="quote-block reveal">
+    <span class="quote-mark">"</span>
+    <p class="quote-text">
+      Ready to face the nightmares that awaits you beneath this point? Click the "Explore our Games" button and find out what you're going to dream about tonight.
+    </p>
+  </div>
+
+  <div style="text-align:center; margin-top: 40px;" class="reveal">
+    <a href="games.html" class="btn btn-outline"><span>Explore Our Games</span><span>→</span></a>
+  </div>
+</section>
+<!-- Footer CTA -->
+<div class="footer-cta">
+  <div class="footer-cta-inner reveal">
+    <div class="footer-cta-text">
+      <h2>Ready to Face Your Fears?</h2>
+      <p>Dive into worlds where reality bends, and horror is just one step away. Your nightmare awaits.</p>
+    </div>
+    <a href="games.html" class="btn btn-outline"><span>Explore Our Games</span></a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">Reaver Corp™</div>
+  <div class="footer-copy">© 2024 Reaver Corp. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#support">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // ── Custom cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '56px';
+      ring.style.height = '56px';
+      ring.style.opacity = '0.8';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+      ring.style.opacity = '0.5';
+    });
+  });
+
+  // ── Reveal on scroll ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+
+  // ── Glitch title effect ──
+  const title = document.querySelector('.hero-title');
+  const glitchChars = '!@#$%^&*REAVERCRP';
+  const original = title.textContent;
+
+  title.addEventListener('mouseenter', () => {
+    let iter = 0;
+    const interval = setInterval(() => {
+      title.textContent = original.split('').map((ch, i) => {
+        if (i < iter) return original[i];
+        if (ch === ' ' || ch === '™') return ch;
+        return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      }).join('');
+      iter += 1.2;
+      if (iter > original.length) {
+        title.textContent = original;
+        clearInterval(interval);
+      }
+    }, 40);
+  });
+
+  // ── Stat counter animation ──
+  const statNums = document.querySelectorAll('.stat-num');
+  const statObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.counted) {
+        e.target.dataset.counted = true;
+        const target = e.target.textContent;
+        if (target === '∞' || target.includes('%')) return;
+        const num = parseInt(target);
+        if (isNaN(num)) return;
+        let start = num > 100 ? num - 100 : 0;
+        const step = Math.ceil((num - start) / 40);
+        const timer = setInterval(() => {
+          start = Math.min(start + step, num);
+          e.target.textContent = start;
+          if (start >= num) clearInterval(timer);
+        }, 30);
+      }
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(el => statObs.observe(el));
+
+  // ── Parallax hero glow on scroll ──
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.querySelector('.hero').style.backgroundPositionY = -(y * 0.3) + 'px';
+  });
+
+// Lógica de idioma por sesión (no bloquea al usuario para siempre)
+const langModal = document.getElementById('language-modal');
+const btnEs = document.getElementById('btn-es');
+const btnEn = document.getElementById('btn-en');
+
+// Si en esta sesión actual ya se decidió ir a español, redirige automáticamente
+if (sessionStorage.getItem('chosen-lang') === 'es') {
+  window.location.href = 'index-es.html';
+} else {
+  // Si no hay decisión tomada en esta sesión, nos aseguramos de que la caja sea visible
+  langModal.style.display = 'flex'; 
+}
+
+// Si elige Castellano, guardamos la sesión y redirigimos
+btnEs.addEventListener('click', () => {
+  sessionStorage.setItem('chosen-lang', 'es');
+  window.location.href = 'index-es.html';
+});
+
+// Si elige Inglés, simplemente cerramos la caja para que vea esta página (index.html)
+btnEn.addEventListener('click', () => {
+  sessionStorage.setItem('chosen-lang', 'en');
+  langModal.style.display = 'none'; 
+});
+</script>
+</body>
+</html>
